@@ -1,4 +1,7 @@
 module.exports = {
+    userName : "#user-name",
+    password : "#password",
+    loginButton : "#login-button",
     menuButton : "#react-burger-menu-btn",
     MenuOption : ".bm-item.menu-item",
     addtocart : ".btn.btn_primary.btn_small.btn_inventory ",
@@ -8,4 +11,5 @@ module.exports = {
     closeMenu : "#react-burger-cross-btn",
     error : ".error-message-container.error",
     removeButton : ".btn.btn_secondary.btn_small.btn_inventory "
+
 }
