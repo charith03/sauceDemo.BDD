@@ -1,0 +1,27 @@
+{
+  "name": "saucedemo.bdd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:allure": "cucumber-js --require stepDefinitions/**/*.js --require utilities/hooks/**/*.js --format allure-cucumberjs/reporter",
+    "report": "playwright show-report",
+    "allure": "allure generate ./allure-results -o ./allure-report --clean && allure open ./allure-report",
+    "clean": "rimraf playwright-report allure-results allure-report",
+    "cucumber": "npx cucumber-js ./Features/example.feature"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.2",
+    "allure-commandline": "^2.42.1",
+    "allure-cucumberjs": "^3.9.0",
+    "cucumber": "^6.0.7"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^13.0.0"
+  }
+}

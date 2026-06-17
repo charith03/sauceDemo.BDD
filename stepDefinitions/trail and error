@@ -1,0 +1,199 @@
+// const { Given, When, Then } = require('@cucumber/cucumber');
+// const { LoginAndInventory } = require('../pages/LoginAndInventoryDetails.page');
+// const { expect } = require('@playwright/test');
+
+// let saucedemopage;
+
+// Given('I open the sauce demo site', async function () {
+//     saucedemopage = new LoginAndInventory(this.page);
+//     await this.page.goto('https://www.saucedemo.com/');
+// });
+
+// When('I login with valid credentails', async function () {
+//     await saucedemopage.LoginPage();
+// });
+
+// Then('I verify the count of products in inventory page', async function () {
+
+//     const products = this.page.locator('.inventory_item');
+//     const count = await products.count();
+
+//     console.log("Total product count:", count);
+
+//     await expect(count).toBeGreaterThan(0);
+//     await expect(count).toBe(6); // SauceDemo has 6 products
+
+//     for (let i = 0; i < count; i++) {
+
+//         const product = products.nth(i);
+
+//         const name = product.locator('.inventory_item_name');
+//         const description = product.locator('.inventory_item_desc');
+//         const price = product.locator('.inventory_item_price');
+//         const addToCartBtn = product.locator('button');
+
+//         await expect(name).toBeVisible();
+//         await expect(description).toBeVisible();
+//         await expect(price).toBeVisible();
+//         await expect(addToCartBtn).toBeVisible();
+
+//     }
+// });
+
+
+// const locators = require('../locators/AddingMultipleProducts.locators')
+
+// class AddMultipleProducts {
+//     constructor(page) {
+//         this.page = page
+//         this.prodNames = page.locator(locators.productsName)
+//         this.prodDescription = page.locator(locators.productDescription)
+//         this.prodPrices = page.locator(locators.productPrice)
+//         this.CartBadge = page.locator(locators.cartBadge)
+//         this.addToCart = page.locator(locators.addToCArt)
+//         this.removeButn = page.locator(locators.removeButton)
+//     }
+
+//     async ExtractProducts() {
+//         const productNames = []
+
+//         const count = await this.prodDescription.count()
+
+//         for (let i = 0; i < count; i++) {
+//             const name = await this.prodNames.nth(i).innerText()
+//             const price = await this.prodPrices.nth(i).innerText()
+
+//             productNames.push({ name, price })
+//             console.log('Product:', name)
+//         }
+
+//         return productNames
+//     }
+
+//     async addProducts() {
+//         for (let i = 0; i < 3; i++) {
+//             await this.addToCart.nth(i).click()
+//         }
+//     }
+
+//     async reloadPage() {
+//         await this.page.reload() 
+//     }
+// }
+
+// module.exports = { AddMultipleProducts }
+
+
+
+
+// const { Before, After, setDefaultTimeout } = require('@cucumber/cucumber');
+// const { chromium } = require('playwright');
+// const { LoginAndInventory } = require('../pages/LoginAndInventoryDetails.page');
+
+// let browser;
+// let context;
+
+// setDefaultTimeout(60000)
+
+// Before(async function () {
+//     browser = await chromium.launch({ headless: false });
+//     context = await browser.newContext()
+//     this.page = await context.newPage()
+// });
+
+
+// Before({ tags: "@validLogin" }, async function () {
+//     const loginPage = new LoginAndInventory(this.page)
+//     await loginPage.LoginPage()
+// });
+
+
+// After(async function () {
+//     console.log("Closing browser...")
+//     await this.page.close()
+//     await context.close()
+//     await browser.close()
+// });
+
+const locators = require('../locators/ProductSortingFunctionality.locators')
+const { expect } = require('@playwright/test')
+
+class ProductSorting {
+    constructor(page){
+        this.page = page
+        this.PNames = page.locator(locators.productsName)
+        this.Pprices = page.locator(locators.productPrice)
+        this.sortBtn = page.locator(locators.sortButton)
+    }
+
+    async extractProducts(){
+        const products = []
+
+        const count = await this.PNames.count()
+
+        for(let i = 0; i < count; i++){
+            const pname = await this.PNames.nth(i).innerText()
+            const priceText = await this.Pprices.nth(i).innerText()
+
+            const price = parseFloat(priceText.replace('$',''))
+
+            products.push({ pname, price })
+        }
+
+        return products
+    }
+
+    async verifySorting(type){
+
+        // Select sorting option
+        await this.sortBtn.selectOption(type)
+
+        await this.page.waitForTimeout(1000)
+
+        const actualList = await this.extractProducts()
+
+        const expectedList = []
+
+        for(let i = 0; i < actualList.length; i++){
+            expectedList.push({
+                pname: actualList[i].pname,
+                price: actualList[i].price
+            })
+        }
+
+        if(type === 'az'){
+            expectedList.sort(function(a, b){
+                if(a.pname > b.pname) return 1
+                if(a.pname < b.pname) return -1
+                return 0
+            })
+        }
+
+        else if(type === 'za'){
+            expectedList.sort(function(a, b){
+                if(a.pname < b.pname) return 1
+                if(a.pname > b.pname) return -1
+                return 0
+            })
+        }
+
+        else if(type === 'lohi'){
+            expectedList.sort(function(a, b){
+                return a.price - b.price
+            })
+        }
+
+        else if(type === 'hilo'){
+            expectedList.sort(function(a, b){
+                return b.price - a.price
+            })
+        }
+
+        console.log('Actual List:', actualList)
+        console.log('Expected List:', expectedList)
+
+        expect(actualList).toEqual(expectedList)
+    }
+}
+
+module.exports = { ProductSorting }
