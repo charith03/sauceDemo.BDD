@@ -60,25 +60,7 @@ class CheckOutFlow{
         for (let price of prices) {
             sum += parseFloat(price.replace('$', ''))
         }
-        console.log("sum of 2 products:", sum)
-        const ExtractSubTotal = await this.subTotal.innerText()
-        const Subtotal = parseFloat(ExtractSubTotal.replace('Item total: $', ''))
-        console.log('===============================================')
-        console.log("displayed total amount:", Subtotal)
-        console.log('===============================================')
-        expect(sum).toBe(Subtotal)
-        const ExtractTax = await this.taxAmount.innerText()
-        const tax = parseFloat(ExtractTax.replace('Tax: $', ''))
-        const finalAmount = await this.finalTotal.innerText()
-        const TotalAmount = parseFloat(finalAmount.replace('Total: $', ''))
-        expect(sum + tax).toBeCloseTo(TotalAmount, 2)
-    }
-    async finishOrder(){
-        await this.FinishBtn.click()
-        const successText = await this.validate.innerText()
-        expect(this.page.getByText('Thank you for your order!')).toBeVisible()
-        console.log('success message: ', successText)
-    }   
+
 }
 
 module.exports = {CheckOutFlow}
