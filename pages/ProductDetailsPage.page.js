@@ -10,9 +10,9 @@ class ProductDetailsPage{
         this.prodPrice = page.locator(locators.ProductPrice)
         this.backTOInventory = page.locator(locators.backToProds)
     }
-    // async ProductPage(){
-    //     //await this.prodNameClick.nth(0).click()
-    // }
+    async ProductPage(){
+        await this.prodNameClick.nth(0).click()
+    }
     async validateDetails(){
         await this.prodNameClick.nth(0).click()
         await expect(this.prodName).toBeVisible()
@@ -21,9 +21,9 @@ class ProductDetailsPage{
         console.log('==============================================================')
         console.log('the selected product contains Name, description and price for that proudct in deatils pages')
     }
-    // async backTOInventoryPage(){
-    //     //await this.backTOInventory.click()
-    // }
+    async backTOInventoryPage(){
+        await this.backTOInventory.click()
+    }
     async InventoryPage(){
         await this.backTOInventory.click()
         //const count = await this.prodName.count()
